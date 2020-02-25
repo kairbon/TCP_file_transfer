@@ -17,12 +17,13 @@ public class Decoder {
 
   public static TransportProtocolEntity streamDecode(DataInputStream stream) throws IOException {
     byte[] contentByte;
-    int length = stream.readUnsignedByte();
+    int length = stream.readUnsignedShort();
     contentByte = new byte[length];
     stream.read(contentByte);
     byte[] fileNameByte = new byte[64];
     System.arraycopy(contentByte, 0, fileNameByte, 0, 64);
     String fileName = new String(fileNameByte, "utf-8");
+    fileName = fileName.replaceAll("[\u0000]", "");
     byte[] fileByte = new byte[length - 64];
     System.arraycopy(contentByte, 64, fileByte, 0, length - 64);
     TransportProtocolEntity entity = new TransportProtocolEntity();

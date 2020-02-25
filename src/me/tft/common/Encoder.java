@@ -16,11 +16,11 @@ public class Encoder {
         fileNameBytes = "NameTooLong".getBytes("utf-8");
       }
       byte[] fnb = new byte[64];
-      System.arraycopy(fileNameBytes, 0, fnb, 0, 64);
+      System.arraycopy(fileNameBytes, 0, fnb, 0, fileNameBytes.length);
       int uintLength = ((int) file.length() + 64) & 0x0000ffff;
       byte[] contentLengthByte = intToByte(uintLength);
-      bos.write(contentLengthByte, 0, 2);
-      bos.write(fnb, 0, 2);
+      bos.write(contentLengthByte, 0, contentLengthByte.length);
+      bos.write(fnb, 0, fnb.length);
       int buf_size = 1024;
       byte[] buffer = new byte[buf_size];
       int len = 0;

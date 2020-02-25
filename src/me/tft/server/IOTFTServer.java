@@ -1,9 +1,5 @@
 package me.tft.server;
 
-import me.tft.common.Decoder;
-import me.tft.common.TransportProtocolEntity;
-
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,7 +11,10 @@ public class IOTFTServer extends AbstractServer {
   private ServerSocket serverSocket;
 
   public static void main(String[] args) {
-
+    IOTFTServer server = new IOTFTServer();
+    server.setPort(9999);
+    server.setStorePath("F:\\output");
+    server.run();
   }
 
   @Override
@@ -27,7 +26,7 @@ public class IOTFTServer extends AbstractServer {
 
       while (true) {
         Socket socket = serverSocket.accept();
-        Runnable r =  new IOServerHandler(socket);
+        Runnable r = new IOServerHandler(socket, getStorePath());
         threadPool.submit(r);
       }
     } catch (IOException e) {
@@ -37,6 +36,11 @@ public class IOTFTServer extends AbstractServer {
 
   @Override
   public void close() {
+    try {
+      serverSocket.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
   }
 }
