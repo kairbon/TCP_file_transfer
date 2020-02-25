@@ -10,13 +10,6 @@ public class IOTFTServer extends AbstractServer {
 
   private ServerSocket serverSocket;
 
-  public static void main(String[] args) {
-    IOTFTServer server = new IOTFTServer();
-    server.setPort(9999);
-    server.setStorePath("F:\\output");
-    server.run();
-  }
-
   @Override
   public void run() {
     try {
