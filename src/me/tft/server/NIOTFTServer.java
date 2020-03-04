@@ -35,6 +35,7 @@ public class NIOTFTServer extends AbstractServer {
       ssc.register(selector, SelectionKey.OP_ACCEPT);
       ExecutorService executorService = Executors.newFixedThreadPool(POOL_SIZE);
       while (true) {
+
         if (selector.select(TIMEOUT) == 0) {
           System.out.println("waiting");
           continue;
@@ -48,7 +49,7 @@ public class NIOTFTServer extends AbstractServer {
           }
           if (key.isReadable()) {
             TransportProtocolEntity t = handleRead(key);
-            if ( t != null) {
+            if (t != null) {
               executorService.submit(new NIOServerHandler(t, getStorePath()));
             }
           }
@@ -79,6 +80,7 @@ public class NIOTFTServer extends AbstractServer {
     int contentLength = 0;
     byte[] content = new byte[0];
     bytesRead = sc.read(buf);
+    int nowSize = 0;
     while (bytesRead > 0) {
       readCnt++;
       buf.flip();
@@ -86,20 +88,33 @@ public class NIOTFTServer extends AbstractServer {
         byte[] lengthBytes = new byte[2];
         buf.get(lengthBytes);
         contentLength = readUShort(lengthBytes);
+        content = new byte[contentLength];
         if (bytesRead - 2 < contentLength) {
+          int size = (int) bytesRead - 2;
+          byte[] tmpBytes = new byte[size];
+          buf.get(tmpBytes);
+          System.arraycopy(tmpBytes, 0, content, nowSize, size);
+          nowSize += size;
+          buf.flip();
           bytesRead = sc.read(buf);
           continue;
         } else {
-          content = new byte[contentLength];
           buf.get(content);
           break;
         }
       } else if (readCnt == 1 && bytesRead < 2) {
         readCnt = 0;
+        buf.flip();
         bytesRead = sc.read(buf);
       }
       if (readCnt > 1) {
         if (bytesRead < contentLength) {
+          int size = (int) bytesRead;
+          byte[] tmpBytes = new byte[size];
+          buf.get(tmpBytes);
+          System.arraycopy(tmpBytes, 0, content, nowSize, size);
+          nowSize += size;
+          buf.flip();
           bytesRead = sc.read(buf);
           continue;
         } else {
@@ -111,6 +126,8 @@ public class NIOTFTServer extends AbstractServer {
     }
     if (contentLength == 0) {
       sc.close();
+    } else {
+      sc.write(ByteBuffer.wrap(new byte[]{0, 1}));
     }
     return Decoder.bytesDecode(contentLength, content);
   }

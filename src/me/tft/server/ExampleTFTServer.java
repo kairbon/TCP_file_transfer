@@ -6,7 +6,7 @@ public class ExampleTFTServer {
   public final static String STORE_PATH = "F:\\output";
 
   public static void main (String[] args) {
-    AbstractServer server = new IOTFTServer();
+    AbstractServer server = new NIOTFTServer();
     server.setPort(PORT);
     server.setStorePath(STORE_PATH);
     server.run();
