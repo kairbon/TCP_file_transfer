@@ -16,10 +16,10 @@ public class TFTClient {
         return;
       }
       fp = args[0];
+      File file = Paths.get(fp).toFile();
+      byte[] content = Encoder.fileEncode(file);
       Socket socket = new Socket("127.0.0.1", 9999);
       OutputStream ops = socket.getOutputStream();
-      File file = Paths.get("fp").toFile();
-      byte[] content = Encoder.fileEncode(file);
       ops.write(content);
       DataInputStream dis = new DataInputStream(socket.getInputStream());
       int result = dis.readUnsignedShort();
