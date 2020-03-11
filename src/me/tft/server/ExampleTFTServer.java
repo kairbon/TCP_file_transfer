@@ -5,10 +5,18 @@ public class ExampleTFTServer {
 
   public final static String STORE_PATH = "F:\\output";
 
-  public static void main (String[] args) {
-    AbstractServer server = new NIOTFTServer();
+  public static void main(String[] args) {
+    AbstractServer server = null;
+    if (args.length == 0) {
+      System.out.println("Please select IO mode(BIO/NIO) and file path");
+    }
+    if (args[0].equals("BIO")) {
+      server = new NIOTFTServer();
+    } else if (args[0].equals("NIO")) {
+      server = new IOTFTServer();
+    }
     server.setPort(PORT);
-    server.setStorePath(STORE_PATH);
+    server.setStorePath(args[1]);
     server.run();
   }
 }
