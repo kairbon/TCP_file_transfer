@@ -34,10 +34,10 @@ public class NIOTFTServer extends AbstractServer {
       ssc.configureBlocking(false);
       ssc.register(selector, SelectionKey.OP_ACCEPT);
       ExecutorService executorService = Executors.newFixedThreadPool(POOL_SIZE);
+      System.out.println("NIO-Server启动成功，预备开始监听请求");
       while (true) {
-
         if (selector.select(TIMEOUT) == 0) {
-          System.out.println("waiting");
+//          System.out.println("waiting");
           continue;
         }
         Iterator<SelectionKey> iter = selector.selectedKeys().iterator();
@@ -51,6 +51,7 @@ public class NIOTFTServer extends AbstractServer {
             TransportProtocolEntity t = handleRead(key);
             if (t != null) {
               executorService.submit(new NIOServerHandler(t, getStorePath()));
+              System.out.println("接收成功！！");
             }
           }
         }

@@ -9,9 +9,9 @@ public class ExampleTFTServer {
       System.out.println("Please select IO mode(BIO/NIO) and file path");
     }
     if (args[0].equals("BIO")) {
-      server = new NIOTFTServer();
-    } else if (args[0].equals("NIO")) {
       server = new IOTFTServer();
+    } else if (args[0].equals("NIO")) {
+      server = new NIOTFTServer();
     }
     server.setPort(PORT);
     server.setStorePath(args[1]);

@@ -14,13 +14,14 @@ public class IOTFTServer extends AbstractServer {
   public void run() {
     try {
       serverSocket = new ServerSocket(getPort());
-      System.out.println("Server启动成功，预备开始监听请求");
+      System.out.println("BIO-Server启动成功，预备开始监听请求");
       ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
       while (true) {
         Socket socket = serverSocket.accept();
         Runnable r = new IOServerHandler(socket, getStorePath());
         threadPool.submit(r);
+        System.out.println("接收成功！！");
       }
     } catch (IOException e) {
       e.printStackTrace();
